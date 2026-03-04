@@ -1,0 +1,27 @@
+services:
+  backend:
+    build: ./backend
+    container_name: django_backend
+    volumes:
+      - ./backend:/app
+      - backend-data:/app/db
+      - ./backend/media:/app/media
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: gunicorn backend.wsgi:application --bind 0.0.0.0:8000 --workers 3 --pid /tmp/gunicorn.pid
+
+  frontend:
+    build: ./frontend
+    container_name: react_frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - HOST=0.0.0.0
+      - CHOKIDAR_USEPOLLING=true
+    command: npm start
+
+volumes:
+  backend-data:
+  frontend-node-modules:
